@@ -43,26 +43,19 @@ function getIpFromPage(webPage) {
 
 async function didIpChanged(ip) {
   const lastIp = await readIpFromFile()
-  console.log(lastIp)
-  console.log(ip)
 
-  if (lastIp === ip) return false
-  return true
+  return !(lastIp === ip)
 }
 
 function readIpFromFile() {
   return new Promise((resolve, reject) => {
-    try {
-      fs.readFile(__dirname + '/iplogs/currentIp', 'utf8', (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(data)
-        }
-      })
-    } catch (e) {
-      reject(e)
-    }
+    fs.readFile(__dirname + '/iplogs/currentIp', 'utf8', (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
   })
 }
 
