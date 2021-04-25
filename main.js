@@ -1,27 +1,35 @@
 const https = require('https')
-const fs = require('fs')
+const fs = require('fs');
 
 const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/gm
 
-const ipPageUrl = '';
+/**
+ * A page showing your IP address and you are allowed to scrape
+ */
+const ipPageUrl = 'https://example.com';
+
+/**
+ * The URL to update your DDNS service
+ */
+const updateUrl = 'https://example.com';
 
 (async function main() {
   try {
     const webPage = await getWebContend(ipPageUrl)
     const ip = getIpFromPage(webPage)
     if (await didIpChanged(ip)) {
-      // callDDNS service
-      updateIpLogs(ip)
+      const response = await getWebContend(updateUrl)
+      await updateIpLogs(ip)
+      console.log(response)
     }
   } catch (e) {
     console.error(e)
   }
 })()
 
-
-function getWebContend(page) {
+function getWebContend(url) {
   return new Promise((resolve, reject) => {
-    https.get(page, (res) => {
+    https.get(url, (res) => {
       res.setEncoding('utf-8')
       let rawData = ""
 
