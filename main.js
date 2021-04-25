@@ -1,24 +1,15 @@
 const https = require('https')
 const fs = require('fs');
 
-const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/gm
-
-/**
- * A page showing your IP address and you are allowed to scrape
- */
-const ipPageUrl = 'https://example.com';
-
-/**
- * The URL to update your DDNS service
- */
-const updateUrl = 'https://example.com';
+const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/gm;
 
 (async function main() {
   try {
-    const webPage = await getWebContend(ipPageUrl)
+    const config = await getConfig();
+    const webPage = await getWebContend(config.ipScraperPage)
     const ip = getIpFromPage(webPage)
     if (await didIpChanged(ip)) {
-      const response = await getWebContend(updateUrl)
+      const response = await getWebContend(config.ddnsServiceUpdateUrl)
       await updateIpLogs(ip)
       console.log(response)
     }
@@ -26,6 +17,15 @@ const updateUrl = 'https://example.com';
     console.error(e)
   }
 })()
+
+function getConfig() {
+  return new Promise((resolve, reject) => {
+    fs.readFile(__dirname + "/config.json", 'utf8', (err, data) => {
+      if (err) reject(err)
+      else resolve(JSON.parse(data))
+    })
+  })
+}
 
 function getWebContend(url) {
   return new Promise((resolve, reject) => {
@@ -58,11 +58,8 @@ async function didIpChanged(ip) {
 function readIpFromFile() {
   return new Promise((resolve, reject) => {
     fs.readFile(__dirname + '/iplogs/currentIp', 'utf8', (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(data)
-      }
+      if (err) reject(err)
+      else resolve(data)
     })
   })
 }
