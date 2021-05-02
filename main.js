@@ -9,6 +9,10 @@ const ddnsServiceResponseFilePath = __dirname + '/iplogs/ddnsServiceResponse.log
 const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/gm;
 
 (async function main() {
+  setInterval(run(), 1000 * 60 * 30);
+})()
+
+function run() {
   try {
     const config = await getConfig();
     const ip = await getIpAddress(config.ipScraperPage);
@@ -21,7 +25,7 @@ const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01
   } catch (e) {
     console.error(e)
   }
-})()
+}
 
 function getConfig() {
   return new Promise((resolve, reject) => {
