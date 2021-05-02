@@ -1,6 +1,11 @@
 const https = require('https');
 const fs = require('fs');
 
+const configFilePath =              __dirname + '/config.json';
+const currentIpFilePath =           __dirname + '/iplogs/currentIp';
+const updateLogPath =               __dirname + '/iplogs/update.log.csv';
+const ddnsServiceResponseFilePath = __dirname + '/iplogs/ddnsServiceResponse.log';
+
 const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/gm;
 
 (async function main() {
@@ -20,7 +25,7 @@ const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01
 
 function getConfig() {
   return new Promise((resolve, reject) => {
-    fs.readFile(__dirname + "/config.json", 'utf8', (err, data) => {
+    fs.readFile(configFilePath, 'utf8', (err, data) => {
       if (err) reject(err)
       else resolve(JSON.parse(data))
     })
@@ -65,7 +70,7 @@ async function didIpChanged(ip) {
 
 function readIpFromFile() {
   return new Promise((resolve, reject) => {
-    fs.readFile(__dirname + '/iplogs/currentIp', 'utf8', (err, data) => {
+    fs.readFile(currentIpFilePath, 'utf8', (err, data) => {
       if (err) reject(err)
       else resolve(data)
     })
@@ -74,10 +79,10 @@ function readIpFromFile() {
 
 function updateIpLogs(ip) {
   return new Promise((resolve, reject) => {
-    fs.appendFile(__dirname + '/iplogs/update.log.csv', `${getFormatedDate()}, ${ip}\n`, (err) => {
+    fs.appendFile(updateLogPath, `${getFormatedDate()}, ${ip}\n`, (err) => {
       if (err) reject(err)
     })
-    fs.writeFile(__dirname + '/iplogs/currentIp', ip, (err) => {
+    fs.writeFile(currentIpFilePath, ip, (err) => {
       if (err) reject(err)
       else resolve()
     })
@@ -86,7 +91,7 @@ function updateIpLogs(ip) {
 
 function logDdnsServiceResponse(response) {
   return new Promise((resolve, reject) => {
-    fs.appendFile(__dirname + '/iplogs/ddnsServiceResponse.log', `=> ${getFormatedDate()}:\n${response}\n${getBreakLineForLogs()}\n\n`, (err) => {
+    fs.appendFile(ddnsServiceResponseFilePath, `=> ${getFormatedDate()}:\n${response}\n${getBreakLineForLogs()}\n\n`, (err) => {
       if (err) reject(err)
       else resolve()
     });
