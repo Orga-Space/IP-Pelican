@@ -1,4 +1,4 @@
-const https = require('https')
+const https = require('https');
 const fs = require('fs');
 
 const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/gm;
@@ -6,8 +6,7 @@ const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01
 (async function main() {
   try {
     const config = await getConfig();
-    const webPage = await getWebContend(config.ipScraperPage)
-    const ip = getIpFromPage(webPage)
+    const ip = await getIpAddress(config.ipScraperPage);
     if (await didIpChanged(ip)) {
       const response = await getWebContend(config.ddnsServiceUpdateUrl)
       await updateIpLogs(ip)
@@ -27,7 +26,17 @@ function getConfig() {
   })
 }
 
-function getWebContend(url) {
+async function getIpAddress(scraperPageUrl) {
+  const webPage = await scrapePage(scraperPageUrl);
+  const ipArray = getIpsFromText(webPage);
+
+  if (ipArray.length === 0)   throw new Error("No IP Address found");
+  if (ipArray.length > 1)     throw new Error("More than one IP Addres was found; IP Address Array: " + ipArray);
+  if (ipArray.length != 1)    throw new Error("I messed up the if conditions in getIpAddress (~_~)");
+  return ipArray[0]
+}
+
+function scrapePage(url) {
   return new Promise((resolve, reject) => {
     https.get(url, (res) => {
       res.setEncoding('utf-8')
@@ -40,13 +49,11 @@ function getWebContend(url) {
   })
 }
 
-function getIpFromPage(webPage) {
-  const potentialDuplicatedIpAddresses = webPage.match(regex)
+function getIpsFromText(text) {
+  const potentialDuplicatedIpAddresses = text.match(regex)
   const uniqueIpAddresses = Array.from(new Set(potentialDuplicatedIpAddresses))
   
-  if (uniqueIpAddresses.length === 0) throw new Error("No IP Address found")
-  if (uniqueIpAddresses.length > 1) throw new Error("More than one IP Addres was found; IP Address Array: " + uniqueIpAddresses)
-  return uniqueIpAddresses[0]
+  return uniqueIpAddresses
 }
 
 async function didIpChanged(ip) {
