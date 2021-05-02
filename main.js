@@ -8,9 +8,10 @@ const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01
     const config = await getConfig();
     const ip = await getIpAddress(config.ipScraperPage);
     if (await didIpChanged(ip)) {
-      const response = await getWebContend(config.ddnsServiceUpdateUrl)
+      //scraping the ddns service provider with the right url will update the ddns entry.
+      const response = await scrapePage(config.ddnsServiceUpdateUrl)
       await updateIpLogs(ip)
-      console.log(response)
+      await logDdnsServiceResponse(response)
     }
   } catch (e) {
     console.error(e)
@@ -73,7 +74,7 @@ function readIpFromFile() {
 
 function updateIpLogs(ip) {
   return new Promise((resolve, reject) => {
-    fs.appendFile(__dirname + '/iplogs/log.csv', `${getFormatedDate()}, ${ip}\n`, (err) => {
+    fs.appendFile(__dirname + '/iplogs/update.log.csv', `${getFormatedDate()}, ${ip}\n`, (err) => {
       if (err) reject(err)
     })
     fs.writeFile(__dirname + '/iplogs/currentIp', ip, (err) => {
@@ -83,10 +84,27 @@ function updateIpLogs(ip) {
   })
 }
 
+function logDdnsServiceResponse(response) {
+  return new Promise((resolve, reject) => {
+    fs.appendFile(__dirname + '/iplogs/ddnsServiceResponse.log', `=> ${getFormatedDate()}:\n${response}\n${getBreakLineForLogs()}\n\n`, (err) => {
+      if (err) reject(err)
+      else resolve()
+    });
+  });
+}
+
 function getFormatedDate() {
   let current = new Date();
   let cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
   let cTime = current.getHours() + ":" + current.getMinutes();
   let dateTime = cDate + ' ' + cTime;
   return dateTime
+}
+
+function getBreakLineForLogs() {
+  let breakLine = ""
+  for (let i = 0; i < 75; i++) {
+    breakLine = breakLine + '-'
+  }
+  return breakLine
 }
