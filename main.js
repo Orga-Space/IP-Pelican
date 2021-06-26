@@ -1,6 +1,8 @@
 const https = require('https');
 const fs = require('fs');
 
+const apiServer = require('./apiServer');
+
 //file paths
 const configFilePath =              __dirname + '/config.json';
 const currentIpFilePath =           __dirname + '/iplogs/currentIp';
@@ -9,14 +11,15 @@ const ddnsServiceResponseFilePath = __dirname + '/iplogs/ddnsServiceResponse.log
 
 const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/gm;
 
-//                     mili   s    m    h
+//                     milli  s    m    h
 const updateInterval = 1000 * 60 * 60 * 2;
 
 (async function main() {
-  setInterval(run(), updateInterval);
+  apiServer(9001, updateLogPath);
+  setInterval(run, updateInterval);
 })()
 
-function run() {
+async function run() {
   try {
     const config = await getConfig();
     const ip = await getIpAddress(config.ipScraperPage);
