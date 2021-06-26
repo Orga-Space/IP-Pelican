@@ -1,6 +1,7 @@
 const https = require('https');
 const fs = require('fs');
 
+//file paths
 const configFilePath =              __dirname + '/config.json';
 const currentIpFilePath =           __dirname + '/iplogs/currentIp';
 const updateLogPath =               __dirname + '/iplogs/update.log.csv';
@@ -8,8 +9,11 @@ const ddnsServiceResponseFilePath = __dirname + '/iplogs/ddnsServiceResponse.log
 
 const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/gm;
 
+//                     mili   s    m    h
+const updateInterval = 1000 * 60 * 60 * 2;
+
 (async function main() {
-  setInterval(run(), 1000 * 60 * 30);
+  setInterval(run(), updateInterval);
 })()
 
 function run() {
