@@ -2,6 +2,10 @@ const https = require('https');
 const fs = require('fs');
 
 const apiServer = require('./apiServer');
+const {
+  getFormatedDate,
+  breakLineForLogs
+} = require('./helper');
 
 //file paths
 const configFilePath =              __dirname + '/config.json';
@@ -15,6 +19,7 @@ const regex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01
 const updateInterval = 1000 * 60 * 60 * 2;
 
 (async function main() {
+  run();
   apiServer(9001, updateLogPath);
   setInterval(run, updateInterval);
 })()
@@ -102,25 +107,9 @@ function updateIpLogs(ip) {
 
 function logDdnsServiceResponse(response) {
   return new Promise((resolve, reject) => {
-    fs.appendFile(ddnsServiceResponseFilePath, `=> ${getFormatedDate()}:\n${response}\n${getBreakLineForLogs()}\n\n`, (err) => {
+    fs.appendFile(ddnsServiceResponseFilePath, `=> ${getFormatedDate()}:\n${response}\n${breakLineForLogs}\n\n`, (err) => {
       if (err) reject(err)
       else resolve()
     });
   });
-}
-
-function getFormatedDate() {
-  let current = new Date();
-  let cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
-  let cTime = current.getHours() + ":" + current.getMinutes();
-  let dateTime = cDate + ' ' + cTime;
-  return dateTime
-}
-
-function getBreakLineForLogs() {
-  let breakLine = ""
-  for (let i = 0; i < 75; i++) {
-    breakLine = breakLine + '-'
-  }
-  return breakLine
 }
