@@ -1,4 +1,4 @@
 {
-    "ipScraperPage": "https://wtfismyip.com/",
+    "pageToScrape": "https://wtfismyip.com/",
     "ddnsServiceUpdateUrl": "https://example.com"
 }
