@@ -1,4 +1,5 @@
 const ipUpdater = require('./ipUpdate');
+const startAPI = require('./server/apiServer');
 const { readConfig } = require('../helper');
 
 
@@ -12,6 +13,8 @@ const paths = {
 (async function boot() {
     const serviceConfig = await readConfig(paths.configFile);
 
-    ipUpdater(serviceConfig, paths);
+    await ipUpdater(serviceConfig, paths);
+
+    if (serviceConfig.apiServer.enable) startAPI(serviceConfig.apiServer.port, paths.ipUpdateLog);
 })()
 
