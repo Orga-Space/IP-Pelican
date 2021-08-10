@@ -10,11 +10,16 @@ const paths = {
     ddnssResponseLogFile:   __dirname + '/../iplogs/ddnsServiceResponse.log'
 };
 
+//                     milli  s    m    h
+const updateInterval = 1000 * 60 * 60 * 2;
+
 (async function boot() {
     const serviceConfig = await readConfig(paths.configFile);
 
     await ipUpdater(serviceConfig, paths);
 
     if (serviceConfig.apiServer.enable) startAPI(serviceConfig.apiServer.port, paths.ipUpdateLog);
+
+    setInterval(() => ipUpdater(serviceConfig, paths), updateInterval)
 })()
 
