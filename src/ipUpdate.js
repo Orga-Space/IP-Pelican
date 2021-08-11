@@ -6,9 +6,9 @@ const { getFormatedDate, scrapeWebPage, readFrom, logTo, breakLineForLogs } = re
 async function main(serviceConfig, paths) {
     try {
         const scrapedIpAddress = await getIpAddress(serviceConfig.pageToScrape);
-        const lastLogedIpAddress = await readFrom(paths.currentIpFile);
+        const lastLoggedIpAddress = await readFrom(paths.currentIpFile);
 
-        if (scrapedIpAddress != lastLogedIpAddress) {
+        if (scrapedIpAddress != lastLoggedIpAddress) {
             await updateDDNSService(serviceConfig.ddnsServiceUpdateUrl, paths.ddnssResponseLogFile);
             updateIpLogs(scrapedIpAddress, paths.currentIpFile, paths.ipUpdateLog);
         }
