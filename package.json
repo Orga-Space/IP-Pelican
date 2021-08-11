@@ -2,9 +2,9 @@
   "name": "ip-pelican",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "src/boot.js",
   "scripts": {
-    "start": "node main.js",
+    "start": "node src/boot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "orga",

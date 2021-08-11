@@ -1,4 +1,8 @@
 {
-    "ipScraperPage": "https://wtfismyip.com/",
-    "ddnsServiceUpdateUrl": "https://example.com"
+    "pageToScrape": "https://wtfismyip.com/",
+    "ddnsServiceUpdateUrl": "https://example.com",
+    "apiServer": {
+        "enable": true,
+        "port": 9001
+    }
 }
