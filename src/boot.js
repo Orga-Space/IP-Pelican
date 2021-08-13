@@ -18,7 +18,7 @@ const updateInterval = 1000 * 60 * 60 * 2;
 
     await ipUpdater(serviceConfig, paths);
 
-    if (serviceConfig.apiServer.enable) startAPI(serviceConfig.apiServer.port, paths.ipUpdateLog);
+    if (serviceConfig.apiServer.enable) startAPI(serviceConfig.apiServer.port, paths);
 
     setInterval(() => ipUpdater(serviceConfig, paths), updateInterval)
 })()
