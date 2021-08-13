@@ -9,7 +9,7 @@ This project was created wit ddnss.de as the ddns service provider in mind.
 
 ## Config
 
-In `config.js` you have to define
+In `config.json` you have to define ...
 * a page that tells you your public IP address and you are allowed to scrape
 * and the update link for your ddns update.
 
@@ -18,6 +18,6 @@ In `config.js` you have to define
 
 | Path                    | Description                         |
 |-------------------------|-------------------------------------|
-| `/api/currentIP`        | get current IP                      |
-| `/api/updatelog`        | past IP addresses & date            |
-| `/api/ddnssResponseLog` | response from ddns Service Provider |
+| `/api/currentIP`        | Get current IP                      |
+| `/api/updatelog`        | Past IP addresses & date            |
+| `/api/ddnssResponseLog` | Response from ddns Service Provider |
